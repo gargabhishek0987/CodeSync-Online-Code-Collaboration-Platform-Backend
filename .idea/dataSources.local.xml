@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal" created-in="IU-253.31033.145">
+    <data-source name="codesync_auth@localhost" uuid="b14c84aa-de3d-4eca-99fc-1a569e7c870c">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="POSTGRES" />
+      <schema-mapping />
+    </data-source>
+    <data-source name="codesync_project@localhost" uuid="62dd3834-e276-4f39-9c0d-7cd99c1a31a0">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="POSTGRES" />
+      <schema-mapping />
+    </data-source>
+  </component>
+</project>
