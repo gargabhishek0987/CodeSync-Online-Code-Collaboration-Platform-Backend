@@ -1,0 +1,12 @@
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\collaboration-service\src\main\java\com\codesync\collaboration\controller\CollaborationController.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\collaboration-service\src\main\java\com\codesync\collaboration\dto\CodeChangeMessage.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\collaboration-service\src\main\java\com\codesync\collaboration\dto\CollaborationSession.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\collaboration-service\src\main\java\com\codesync\collaboration\CollaborationApplication.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\collaboration-service\src\main\java\com\codesync\collaboration\controller\SessionRestController.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\collaboration-service\src\main\java\com\codesync\collaboration\dto\PresenceMessage.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\collaboration-service\src\main\java\com\codesync\collaboration\security\JwtTokenProvider.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\collaboration-service\src\main\java\com\codesync\collaboration\dto\CursorMessage.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\collaboration-service\src\main\java\com\codesync\collaboration\security\JwtChannelInterceptor.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\collaboration-service\src\main\java\com\codesync\collaboration\config\SecurityConfig.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\collaboration-service\src\main\java\com\codesync\collaboration\config\WebSocketConfig.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\collaboration-service\src\main\java\com\codesync\collaboration\service\SessionManager.java
