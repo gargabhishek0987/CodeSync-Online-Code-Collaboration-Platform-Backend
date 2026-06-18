@@ -1,0 +1,36 @@
+# Ignore Maven target folder
+/target/
+
+# Ignore Eclipse / IntelliJ project files
+/.idea/
+/*.iml
+/.classpath
+/.project
+/.settings/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Application secrets
+*.env
+application.yml   # optional if you keep secrets here
+application.properties
+
+# Compiled Java classes
+*.class
+
+# Jar files
+*.jar
+*.war
+
+# Git LFS (if you start using large binaries)
+/*.jar
+*.zip
+
+# Temporary files
+*.tmp
+*.swp
