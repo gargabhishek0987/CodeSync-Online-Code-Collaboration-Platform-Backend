@@ -1,0 +1,5 @@
+com\codesync\file\entity\CodeFile.class
+com\codesync\file\dto\FileRequestDto.class
+com\codesync\file\entity\CodeFile$CodeFileBuilder.class
+com\codesync\file\repository\FileRepository.class
+com\codesync\file\exception\ResourceNotFoundException.class
