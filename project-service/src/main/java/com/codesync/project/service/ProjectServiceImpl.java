@@ -2,11 +2,16 @@ package com.codesync.project.service;
 
 import com.codesync.project.dto.ProjectRequestDto;
 import com.codesync.project.dto.ProjectResponseDto;
+import com.codesync.project.dto.ProjectSynopsisDto;
 import com.codesync.project.entity.Project;
+import com.codesync.project.entity.ProjectSynopsis;
 import com.codesync.project.entity.Visibility;
 import com.codesync.project.exception.ResourceNotFoundException;
+import com.codesync.project.dto.NotificationEvent;
 import com.codesync.project.repository.ProjectRepository;
+import com.codesync.project.repository.ProjectSynopsisRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +20,50 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final ProjectSynopsisRepository synopsisRepository;
+    private final com.codesync.project.repository.ProjectMemberRepository memberRepository;
+    private final NotificationProducer notificationProducer;
+
+    @Override
+    @Transactional
+    public void inviteUser(Long projectId, String inviterId, String inviteeId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found"));
+
+        if (!project.getOwnerId().equals(inviterId)) {
+            throw new RuntimeException("Only the owner can invite collaborators");
+        }
+
+        if (memberRepository.existsByProjectIdAndUserId(projectId, inviteeId)) {
+            throw new RuntimeException("User is already a member of this project");
+        }
+
+        com.codesync.project.entity.ProjectMember member = com.codesync.project.entity.ProjectMember.builder()
+                .project(project)
+                .userId(inviteeId)
+                .role(com.codesync.project.entity.ProjectMember.MemberRole.CONTRIBUTOR)
+                .build();
+
+        memberRepository.save(member);
+
+        // Send Session Invite Notification
+        try {
+            NotificationEvent event = new NotificationEvent(
+                "SESSION_INVITE",
+                inviterId + " has invited you to collaborate on project: " + project.getName(),
+                inviteeId,
+                projectId.toString()
+            );
+            notificationProducer.sendNotification(event);
+            log.info("Invite notification sent to {} for project {}", inviteeId, project.getName());
+        } catch (Exception e) {
+            log.error("Failed to send invite notification: {}", e.getMessage());
+        }
+    }
 
     @Override
     @Transactional
@@ -35,15 +81,30 @@ public class ProjectServiceImpl implements ProjectService {
                 .build();
 
         project = projectRepository.save(project);
+        
+        // Send notification via RabbitMQ
+        try {
+            NotificationEvent event = new NotificationEvent(
+                "PROJECT_CREATED",
+                "Project '" + project.getName() + "' has been created successfully!",
+                ownerId,
+                project.getId().toString()
+            );
+            notificationProducer.sendNotification(event);
+        } catch (Exception e) {
+            log.error("Failed to send project creation notification: {}", e.getMessage());
+        }
+
         return mapToDto(project);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProjectResponseDto> getPublicProjects(String language, String query) {
         List<Project> projects;
 
         if (query != null && !query.isEmpty()) {
-            projects = projectRepository.findByNameContainingIgnoreCaseAndVisibility(query, Visibility.PUBLIC);
+            projects = projectRepository.searchPublicProjects(query, Visibility.PUBLIC);
         } else if (language != null && !language.isEmpty()) {
             projects = projectRepository.findByLanguageIgnoreCaseAndVisibility(language, Visibility.PUBLIC);
         } else {
@@ -54,6 +115,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProjectResponseDto> getUserProjects(String ownerId) {
         return projectRepository.findByOwnerId(ownerId).stream()
                 .map(this::mapToDto)
@@ -107,6 +169,14 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional
+    public void deleteProjectAdmin(Long id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
+        projectRepository.delete(project);
+    }
+
+    @Override
+    @Transactional
     public ProjectResponseDto starProject(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
@@ -144,12 +214,42 @@ public class ProjectServiceImpl implements ProjectService {
 
         forkedProject = projectRepository.save(forkedProject);
         
-        // Note: Files would be copied here synchronously or asynchronously via File Service
-
         return mapToDto(forkedProject);
     }
 
+    @Override
+    @Transactional
+    public ProjectResponseDto updateProjectSynopsis(Long id, String currentUserId, ProjectSynopsisDto synopsisDto) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
+
+        if (!project.getOwnerId().equals(currentUserId)) {
+            throw new RuntimeException("Unauthorized to update this project synopsis");
+        }
+
+        ProjectSynopsis synopsis = synopsisRepository.findByProjectId(id)
+                .orElse(ProjectSynopsis.builder().project(project).build());
+
+        synopsis.setActors(synopsisDto.getActors());
+        synopsis.setUseCases(synopsisDto.getUseCases());
+        synopsis.setRequirements(synopsisDto.getRequirements());
+
+        synopsisRepository.save(synopsis);
+        project.setSynopsis(synopsis);
+        
+        return mapToDto(project);
+    }
+
     private ProjectResponseDto mapToDto(Project project) {
+        ProjectSynopsisDto synopsisDto = null;
+        if (project.getSynopsis() != null) {
+            synopsisDto = ProjectSynopsisDto.builder()
+                    .actors(project.getSynopsis().getActors())
+                    .useCases(project.getSynopsis().getUseCases())
+                    .requirements(project.getSynopsis().getRequirements())
+                    .build();
+        }
+
         return ProjectResponseDto.builder()
                 .id(project.getId())
                 .ownerId(project.getOwnerId())
@@ -163,6 +263,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .forkCount(project.getForkCount())
                 .createdAt(project.getCreatedAt())
                 .updatedAt(project.getUpdatedAt())
+                .synopsis(synopsisDto)
                 .build();
     }
 }

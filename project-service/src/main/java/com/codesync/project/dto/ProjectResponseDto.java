@@ -21,4 +21,5 @@ public class ProjectResponseDto {
     private Integer forkCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private ProjectSynopsisDto synopsis;
 }
