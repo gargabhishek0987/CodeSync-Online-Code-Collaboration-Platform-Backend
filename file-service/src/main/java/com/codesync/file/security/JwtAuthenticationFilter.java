@@ -28,8 +28,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 String username = tokenProvider.getUsernameFromJWT(jwt);
+                String role = tokenProvider.getRoleFromJWT(jwt);
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+                var authorities = role != null 
+                    ? Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority(role))
+                    : Collections.<org.springframework.security.core.authority.SimpleGrantedAuthority>emptyList();
+
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);

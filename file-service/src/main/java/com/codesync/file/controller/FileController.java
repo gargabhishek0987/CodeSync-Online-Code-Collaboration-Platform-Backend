@@ -49,11 +49,18 @@ public class FileController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, String>> deleteFile(@PathVariable Long id) {
-        fileService.deleteFile(id);
+    public ResponseEntity<Map<String, String>> deleteFile(@PathVariable Long id, Authentication authentication) {
+        fileService.deleteFile(id, authentication.getName());
         Map<String, String> response = new HashMap<>();
         response.put("message", "File soft-deleted successfully");
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}/rename")
+    public ResponseEntity<FileResponseDto> renameFile(@PathVariable Long id, 
+                                                      @RequestParam String newName,
+                                                      Authentication authentication) {
+        return ResponseEntity.ok(fileService.renameFile(id, newName, authentication.getName()));
     }
 
     @PostMapping("/{id}/restore")

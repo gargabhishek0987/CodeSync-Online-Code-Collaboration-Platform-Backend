@@ -1,5 +1,6 @@
 package com.codesync.file.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,7 +16,9 @@ public class FileResponseDto {
     private String language;
     private String content;
     private Long sizeBytes;
+    @JsonProperty("isFolder")
     private boolean isFolder;
+    @JsonProperty("isDeleted")
     private boolean isDeleted;
     private String createdById;
     private String lastEditedBy;

@@ -11,7 +11,8 @@ public interface FileService {
     FileResponseDto createFile(FileRequestDto requestDto, String currentUserId);
     FileResponseDto getFileById(Long id);
     FileResponseDto updateContent(Long id, UpdateContentDto updateDto, String currentUserId);
-    void deleteFile(Long id);
+    void deleteFile(Long id, String currentUserId);
+    FileResponseDto renameFile(Long id, String newName, String currentUserId);
     FileResponseDto restoreFile(Long id);
     List<FileTreeDto> getProjectFileTree(Long projectId);
 }

@@ -1,5 +1,6 @@
 package com.codesync.file.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ public class FileTreeDto {
     private Long id; // Null if it's an abstract root or purely a folder placeholder
     private String name;
     private String path;
+    @JsonProperty("isFolder")
     private boolean isFolder;
     private String language;
     
