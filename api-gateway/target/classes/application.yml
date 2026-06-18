@@ -1,0 +1,118 @@
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    urls:
+      - name: Auth Service
+        url: /api/auth/v3/api-docs
+      - name: Project Service
+        url: /api/projects/v3/api-docs
+      - name: File Service
+        url: /api/files/v3/api-docs
+      - name: Execution Service
+        url: /api/execute/v3/api-docs
+      - name: Version Service
+        url: /api/versions/v3/api-docs
+      - name: Comment Service
+        url: /api/comments/v3/api-docs
+      - name: Notification Service
+        url: /api/notifications/v3/api-docs
+      - name: Collaboration Service
+        url: /api/sessions/v3/api-docs
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:4200"
+              - "http://127.0.0.1:4200"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+            exposedHeaders: "*"
+
+
+
+      routes:
+        - id: notification-service-ws
+          uri: lb://notification-service
+          predicates:
+            - Path=/ws-notifications/**
+          filters:
+            - StripPrefix=1
+        - id: collaboration-service-ws
+          uri: lb://collaboration-service
+          predicates:
+            - Path=/ws-collab/**
+          filters:
+            - StripPrefix=1
+
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**, /api/auth
+          filters:
+            - StripPrefix=1
+        - id: project-service
+          uri: lb://project-service
+          predicates:
+            - Path=/api/projects/**, /api/projects
+          filters:
+            - StripPrefix=1
+        - id: file-service
+          uri: lb://file-service
+          predicates:
+            - Path=/api/files/**, /api/files
+          filters:
+            - StripPrefix=1
+        - id: collaboration-service-rest
+          uri: lb://collaboration-service
+          predicates:
+            - Path=/api/sessions/**, /api/sessions
+          filters:
+            - StripPrefix=1
+        - id: execution-service
+          uri: lb://execution-service
+          predicates:
+            - Path=/api/execute/**, /api/execute
+          filters:
+            - StripPrefix=1
+        - id: version-service
+          uri: lb://version-service
+          predicates:
+            - Path=/api/versions/**, /api/versions
+          filters:
+            - StripPrefix=1
+        - id: comment-service
+          uri: lb://comment-service
+          predicates:
+            - Path=/api/comments/**, /api/comments
+          filters:
+            - StripPrefix=1
+        - id: notification-service-rest
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notifications/**, /api/notifications
+          filters:
+            - StripPrefix=1
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+
