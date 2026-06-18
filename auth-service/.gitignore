@@ -1,0 +1,30 @@
+# Build directories
+target/
+out/
+build/
+dist/
+
+# Compiled classes and archives
+*.jar
+*.class
+*.war
+*.ear
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
