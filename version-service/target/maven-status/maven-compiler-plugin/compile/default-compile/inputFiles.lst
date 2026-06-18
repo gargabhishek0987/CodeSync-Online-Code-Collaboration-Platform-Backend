@@ -1,0 +1,10 @@
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\version-service\src\main\java\com\codesync\version\service\SnapshotService.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\version-service\src\main\java\com\codesync\version\controller\VersionController.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\version-service\src\main\java\com\codesync\version\VersionServiceApplication.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\version-service\src\main\java\com\codesync\version\dto\DiffResult.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\version-service\src\main\java\com\codesync\version\dto\VersionEvent.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\version-service\src\main\java\com\codesync\version\config\RabbitMQConfig.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\version-service\src\main\java\com\codesync\version\model\Snapshot.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\version-service\src\main\java\com\codesync\version\repository\SnapshotRepository.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\version-service\src\main\java\com\codesync\version\dto\NotificationEvent.java
+C:\Users\Dell\OneDrive\Desktop\codesyncsynopsis\version-service\src\main\java\com\codesync\version\consumer\VersionConsumer.java
